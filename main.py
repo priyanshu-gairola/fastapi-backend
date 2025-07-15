@@ -33,6 +33,10 @@ def find_post(id):
     if post["id"]==id:
       return post
     
+def find_index(id):
+  for i,p in enumerate(my_posts):
+    if p["id"]==id:
+      return i
 
 @app.get('/')
 def root():
@@ -57,6 +61,14 @@ def create_post(post:Post):
   post_dict["id"]=randrange(0,100000)
   my_posts.append(post_dict)
   return {"data":post_dict}
+
+@app.delete('/posts/{id}',status_code=status.HTTP_204_NO_CONTENT)
+def delete(id:int):
+  index=find_index(id)
+  if index==None:
+    return {"message":f"Post with id:{id} not found"}
+  my_posts.pop(index)
+  return "Post deleted"
 
 
 
