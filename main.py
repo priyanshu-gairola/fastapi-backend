@@ -70,5 +70,17 @@ def delete(id:int):
   my_posts.pop(index)
   return "Post deleted"
 
+@app.put('/posts/{id}')
+def post_update(id:int,post:Post):
+  index=find_index(id)
+  if index==None:
+    return {"message":f"Post with id:{id} not found"}
+
+  post_dict=post.dict()
+  post_dict["id"]=id
+  my_posts[index]=post_dict
+
+  return "Post updated successfully" 
+  
 
 
