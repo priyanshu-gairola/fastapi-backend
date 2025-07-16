@@ -1,4 +1,4 @@
-from fastapi import FastAPI,HTTPException,status
+from fastapi import FastAPI,HTTPException, Response,status
 from fastapi.params import Body
 from pydantic import BaseModel
 from typing import Optional
@@ -68,7 +68,7 @@ def delete(id:int):
   if index==None:
     return {"message":f"Post with id:{id} not found"}
   my_posts.pop(index)
-  return "Post deleted"
+  return Response(status_code=204)
 
 @app.put('/posts/{id}')
 def post_update(id:int,post:Post):
@@ -80,7 +80,7 @@ def post_update(id:int,post:Post):
   post_dict["id"]=id
   my_posts[index]=post_dict
 
-  return "Post updated successfully" 
+  return {"message":"Post updated successfully" }
   
 
 
