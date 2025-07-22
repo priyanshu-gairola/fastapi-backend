@@ -6,9 +6,15 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-
+from . import models
+from .database import get_db,engine
+from sqlalchemy.orm import Session
+from fastapi import Depends
 
 app=FastAPI()
+
+models.Base.metadata.create_all(bind=engine)
+
 
 class Post(BaseModel):
   title:str
@@ -17,20 +23,20 @@ class Post(BaseModel):
   #rating:Optional[int]=None
 #connecting databse
 
-while True:
-  try:
-    conn=psycopg2.connect(host='localhost',database='fastapi',user='postgres',password='postgres',
-                          cursor_factory=RealDictCursor)
+# while True:
+#   try:
+#     conn=psycopg2.connect(host='localhost',database='fastapi',user='postgres',password='postgres',
+#                           cursor_factory=RealDictCursor)
     
-    cursor=conn.cursor()
-    print("Database connected successfully")
-    break  #once connected break the loop
+#     cursor=conn.cursor()
+#     print("Database connected successfully")
+#     break  #once connected break the loop
 
 
-  except Exception as error:
-    print("Unable to connect database")
-    print("Error:",error)  
-    time.sleep(3)  #wait for 3 second and retry to connect db
+#   except Exception as error:
+#     print("Unable to connect database")
+#     print("Error:",error)  
+#     time.sleep(3)  #wait for 3 second and retry to connect db
 
 
 
@@ -63,6 +69,11 @@ def find_index(id):
 @app.get('/')
 def root():
   return {"message":"Hey ! made by Priyanshu"}
+
+@app.get('/sql')
+def abc(db:Session=Depends(get_db)):
+  return "Table created new"
+
 
 @app.get('/posts')
 def get_all_posts():
