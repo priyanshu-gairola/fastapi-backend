@@ -72,7 +72,9 @@ def root():
 
 @app.get('/sql')
 def abc(db:Session=Depends(get_db)):
-  return "Table created new"
+  posts=db.query(models.Post).all()
+
+  return {"message":posts}
 
 
 @app.get('/posts')
