@@ -10,6 +10,7 @@ from . import models,schemas
 from .database import get_db,engine
 from sqlalchemy.orm import Session
 from fastapi import Depends
+from typing import List
 
 app=FastAPI()
 
@@ -63,15 +64,15 @@ def find_index(id):
 def root():
   return {"message":"Hey ! made by Priyanshu"}
 
-@app.get('/posts')
+@app.get('/posts',response_model=List[schemas.PostResponse])
 def get_all_posts(db:Session=Depends(get_db)):
   # cursor.execute(""" SELECT * FROM posts """)
   # posts=cursor.fetchall()
 
   all_posts=db.query(models.Post).all()
-  return {"message":all_posts}
+  return all_posts
 
-@app.get("/posts/{id}")
+@app.get("/posts/{id}",response_model=schemas.PostResponse)
 def get_post_by_id(id:int,db:Session=Depends(get_db)):
   # cursor.execute(""" SELECT * FROM posts WHERE id = %s """,(str(id)))
   # post=cursor.fetchone()
@@ -82,9 +83,9 @@ def get_post_by_id(id:int,db:Session=Depends(get_db)):
                         detail=f"post with id:{id} not found."
     )
 
-  return {"post_details":post}
+  return post
 
-@app.post("/posts",status_code=status.HTTP_201_CREATED)
+@app.post("/posts",status_code=status.HTTP_201_CREATED,response_model=schemas.PostResponse)
 def create_post(post:schemas.Post,db:Session=Depends(get_db)):
   # cursor.execute(""" INSERT INTO posts (title,content,published)
   #                 VALUES(%s,%s,%s) RETURNING *""",
@@ -97,7 +98,7 @@ def create_post(post:schemas.Post,db:Session=Depends(get_db)):
   db.commit()
   db.refresh(new_post)
 
-  return {"data":new_post}
+  return new_post
 
 @app.delete('/posts/{id}',status_code=status.HTTP_204_NO_CONTENT)
 def delete(id:int,db:Session=Depends(get_db)):
@@ -127,14 +128,14 @@ def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db)):
 
   post=post_query.first()
 
-  if post_query==None:
+  if post==None:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Post with id:{id} not found")
   
   post_query.update(updated_post.dict(),synchronize_session=False)
   db.commit()
 
-  return {"message":"Post updated successfully" }
+  return "Post updated successfully"
   
 
 
