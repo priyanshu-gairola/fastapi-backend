@@ -6,7 +6,7 @@ from random import randrange
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import time
-from . import models
+from . import models,schemas
 from .database import get_db,engine
 from sqlalchemy.orm import Session
 from fastapi import Depends
@@ -15,13 +15,6 @@ app=FastAPI()
 
 models.Base.metadata.create_all(bind=engine)
 
-
-class Post(BaseModel):
-  title:str
-  content:str
-  published:bool=True
-  #rating:Optional[int]=None
-#connecting databse
 
 # while True:
 #   try:
@@ -70,13 +63,6 @@ def find_index(id):
 def root():
   return {"message":"Hey ! made by Priyanshu"}
 
-@app.get('/sql')
-def abc(db:Session=Depends(get_db)):
-  posts=db.query(models.Post).all()
-
-  return {"message":posts}
-
-
 @app.get('/posts')
 def get_all_posts(db:Session=Depends(get_db)):
   # cursor.execute(""" SELECT * FROM posts """)
@@ -99,7 +85,7 @@ def get_post_by_id(id:int,db:Session=Depends(get_db)):
   return {"post_details":post}
 
 @app.post("/posts",status_code=status.HTTP_201_CREATED)
-def create_post(post:Post,db:Session=Depends(get_db)):
+def create_post(post:schemas.Post,db:Session=Depends(get_db)):
   # cursor.execute(""" INSERT INTO posts (title,content,published)
   #                 VALUES(%s,%s,%s) RETURNING *""",
   #                 (post.title,post.content,post.published))
@@ -132,7 +118,7 @@ def delete(id:int,db:Session=Depends(get_db)):
   return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @app.put('/posts/{id}')
-def post_update(id:int,updated_post:Post,db:Session=Depends(get_db)):
+def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db)):
   # cursor.execute("""UPDATE posts SET title=%s,content=%s,published=%s WHERE id=%s RETURNING * """,
   #                (post.title,post.content,post.published,str(id)))
   # updated_post=cursor.fetchone()
