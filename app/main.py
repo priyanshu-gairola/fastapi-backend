@@ -136,6 +136,16 @@ def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db)):
   db.commit()
 
   return "Post updated successfully"
-  
+
+#create users
+
+@app.post("/users",status_code=status.HTTP_201_CREATED,response_model=schemas.UserOut)
+def create_user(user:schemas.UserCreate,db:Session=Depends(get_db)):
+  new_user=models.User(**user.dict())  #unpacking dict
+  db.add(new_user)
+  db.commit()
+  db.refresh(new_user)
+
+  return new_user
 
 
