@@ -11,6 +11,7 @@ from .database import get_db,engine
 from sqlalchemy.orm import Session
 from fastapi import Depends
 from typing import List
+from . import utils
 
 app=FastAPI()
 
@@ -141,6 +142,9 @@ def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db)):
 
 @app.post("/users",status_code=status.HTTP_201_CREATED,response_model=schemas.UserOut)
 def create_user(user:schemas.UserCreate,db:Session=Depends(get_db)):
+
+  hashed_pw=utils.hash(user.password)
+  user.password=hashed_pw
   new_user=models.User(**user.dict())  #unpacking dict
   db.add(new_user)
   db.commit()
