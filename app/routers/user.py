@@ -6,7 +6,10 @@ from ..database import get_db
 from typing import List
 from .. import utils
 
-router=APIRouter(prefix="/users")
+router=APIRouter(
+  prefix="/users",
+  tags=["User"]
+  )
 
 
 #create users

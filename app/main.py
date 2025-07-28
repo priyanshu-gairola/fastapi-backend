@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from fastapi import Depends
 from typing import List
 from . import utils
-from . routers import post,user
+from . routers import post,user,auth
 
 app=FastAPI()
 
@@ -69,3 +69,4 @@ def root():
 #including routers from other files also
 app.include_router(post.router)
 app.include_router(user.router)
+app.include_router(auth.router)
