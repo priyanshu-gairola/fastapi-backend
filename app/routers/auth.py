@@ -4,6 +4,7 @@ from .. import schemas,models
 from ..database import get_db
 from typing import List
 from .. import utils
+from .. import Oauth
 
 router=APIRouter()
 
@@ -18,5 +19,7 @@ def login(user_cred:schemas.UserLogin,db:Session=Depends(get_db)):
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                         detail="Invalid Credentials")
   
-  return "Successful login"
+  access_token=Oauth.create_access_token(data={"id":user.id})
+  
+  return {"token":access_token , "token_type":"bearer"}
 
