@@ -2,6 +2,7 @@ from fastapi import HTTPException,Depends,status,APIRouter,Response
 from sqlalchemy.orm import Session
 from .. import schemas,models
 from ..database import get_db
+from ..Oauth import get_current_user
 from typing import List
 
 router=APIRouter(
@@ -18,7 +19,7 @@ def get_all_posts(db:Session=Depends(get_db)):
   return all_posts
 
 @router.get("/{id}",response_model=schemas.PostResponse)
-def get_post_by_id(id:int,db:Session=Depends(get_db)):
+def get_post_by_id(id:int,db:Session=Depends(get_db),user_id:int=Depends(get_current_user)):
   # cursor.execute(""" SELECT * FROM posts WHERE id = %s """,(str(id)))
   # post=cursor.fetchone()
 
@@ -31,7 +32,7 @@ def get_post_by_id(id:int,db:Session=Depends(get_db)):
   return post
 
 @router.post("/",status_code=status.HTTP_201_CREATED,response_model=schemas.PostResponse)
-def create_post(post:schemas.Post,db:Session=Depends(get_db)):
+def create_post(post:schemas.Post,db:Session=Depends(get_db),user_id:int=Depends(get_current_user)):
   # cursor.execute(""" INSERT INTO posts (title,content,published)
   #                 VALUES(%s,%s,%s) RETURNING *""",
   #                 (post.title,post.content,post.published))
@@ -46,7 +47,7 @@ def create_post(post:schemas.Post,db:Session=Depends(get_db)):
   return new_post
 
 @router.delete('/{id}',status_code=status.HTTP_204_NO_CONTENT)
-def delete(id:int,db:Session=Depends(get_db)):
+def delete(id:int,db:Session=Depends(get_db),user_id:int=Depends(get_current_user)):
   # cursor.execute(""" DELETE FROM posts WHERE id=%s returning *""",(str(id)))
   # deleted_post=cursor.fetchone()
   # conn.commit()
@@ -64,7 +65,7 @@ def delete(id:int,db:Session=Depends(get_db)):
   return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 @router.put('/{id}')
-def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db)):
+def post_update(id:int,updated_post:schemas.Post,db:Session=Depends(get_db),user_id:int=Depends(get_current_user)):
   # cursor.execute("""UPDATE posts SET title=%s,content=%s,published=%s WHERE id=%s RETURNING * """,
   #                (post.title,post.content,post.published,str(id)))
   # updated_post=cursor.fetchone()
