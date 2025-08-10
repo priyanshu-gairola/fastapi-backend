@@ -16,3 +16,26 @@ def get_db():
   finally:
     db.close()
 
+
+#           """ FOR DATABASE CONNECTION , WhEN WE DIRECTLY CONNECT OUR DB"""    
+
+# import psycopg2
+# from psycopg2.extras import RealDictCursor
+# import time
+
+# while True:
+#   try:
+#     conn=psycopg2.connect(host='localhost',database='fastapi',user='postgres',password='postgres',
+#                           cursor_factory=RealDictCursor)
+    
+#     cursor=conn.cursor()
+#     print("Database connected successfully")
+#     break  #once connected break the loop
+
+
+#   except Exception as error:
+#     print("Unable to connect database")
+#     print("Error:",error)  
+#     time.sleep(3)  #wait for 3 second and retry to connect db
+
+
