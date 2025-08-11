@@ -12,7 +12,7 @@ how to run locally
 First clone this repo by using following command
 
 
-git clone https://github.com/Sanjeev-Thiyagarajan/fastapi-course.git
+Clone this repo
 
 then
 
